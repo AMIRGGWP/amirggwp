@@ -129,16 +129,13 @@
     function toggleClaim(button) {
       const item = button.closest(".item");
       const id = item.getAttribute("data-id");
-      const claimed = button.getAttribute("data-claimed") === "true";
+      const claimed = localStorage.getItem(id) === "true";
       const icon = button.querySelector('span:first-child');
       const text = button.querySelector('span:last-child');
 
       if (claimed) {
-        icon.textContent = "🔓";
-        text.textContent = "Занять";
-        button.setAttribute("data-claimed", "false");
-        item.style.opacity = "1";
-        localStorage.setItem(id, "false");
+        alert("Этот подарок уже занят. Спасибо! ✨");
+        return;
       } else {
         icon.textContent = "✅";
         text.textContent = "Занято ✨";
