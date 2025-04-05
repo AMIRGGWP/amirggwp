@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wishlist Амира — 24 года</title>
+  <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Scheherazade New', serif;
+      background: url('https://images.unsplash.com/photo-1600585152933-00c3f3d889c4') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      backdrop-filter: blur(5px);
+    }
+    .overlay {
+      background-color: rgba(0, 0,  0, 0.6);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .wishlist {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .item {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+    }
+    .item h3 {
+      color: #000;
+      margin-top: 0;
+    }
+    .item a {
+      color: #e4b95b;
+      text-decoration: underline;
+      display: block;
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+    }
+    .item .edit-link {
+      font-size: 0.8rem;
+      color: #ccc;
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+    .item button {
+      background: #e4b95b;
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>🎁 Wishlist Амира — 24 года</h1>
+    <div class="wishlist" id="wishlist">
+      <!-- Карточки подарков автоматически будут обработаны -->
+    </div>
+    <footer>
+      Если занял подарок — просто нажми кнопку, и он будет скрыт для других 🕌<br>
+      Спасибо, что делаете этот день особенным! — Амир
+    </footer>
+  </div>
+
+  <script>
+    const gifts = [
+      { id: "gift11", title: "Худи SACS", desc: "Цвет: лайт меланж, размер: M. Мягкое, уютное и идеально сидит!", link: "" },
+      { id: "gift10", title: "Триммер Philips OneBlade", desc: "Универсальный гаджет для ухода — компактный, удобный и стильный.", link: "" },
+      { id: "gift9", title: "Сертификат в Лайм", desc: "Можно выбрать что-то стильное из новой коллекции Lime.", link: "" },
+      { id: "gift8", title: "Брюки MUTED", desc: "Цвет: серый меланж, размер: L. Ультраудобные и стильные.", link: "" },
+      { id: "gift7", title: "Какую-нибудь невъебическую настолку", desc: "Например, 'Контакты' от Шастуна или что-то супер весёлое для компании!", link: "" },
+      { id: "gift1", title: "Сумка sacs", desc: "Элегантная, минималистичная и универсальная — идеально под образы Амира.", link: "" },
+      { id: "gift2", title: "Очки солнцезащитные модные", desc: "Стильный аксессуар для летнего образа и защиты глаз.", link: "" },
+      { id: "gift3", title: "Сертификат в Street Beat / SuperStep", desc: "На кроссовки, одежду или аксессуары — выбрать можно на месте.", link: "" },
+      { id: "gift4", title: "Что-то символическое или памятное", desc: "Например, фотоальбом с разными фотками с кентами, письмами, моментами жизни ❤️", link: "" },
+      { id: "gift5", title: "Лего конструктор (желательно машина)", desc: "Что-то из Technic, Creator или Speed Champions — чтобы собрать и радоваться!", link: "" },
+      { id: "gift6", title: "Плёночный фотик", desc: "Для атмосферы, эстетики и памятных кадров — можно плёночный или моментальный.", link: "" },
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("wishlist");
+      gifts.forEach(gift => {
+        const claimed = localStorage.getItem(gift.id) === "true";
+        const giftDiv = document.createElement("div");
+        giftDiv.className = "item";
+        giftDiv.setAttribute("data-id", gift.id);
+        giftDiv.style.opacity = claimed ? "0.6" : "1";
+
+        giftDiv.innerHTML = `
+          <h3>${gift.title}</h3>
+          <p>${gift.desc}</p>
+          <a href="${gift.link || '#'}" target="_blank" class="gift-link">${gift.link ? 'Перейти к подарку' : 'Ссылка на подарок'}</a>
+          <span class="edit-link" onclick="editLink(this)">✏️ Изменить ссылку</span>
+          <button onclick="toggleClaim(this)" data-claimed="${claimed}">
+            <span>${claimed ? '✅' : '🔓'}</span><span>${claimed ? 'Занято ✨' : 'Занять'}</span>
+          </button>
+        `;
+        container.appendChild(giftDiv);
+      });
+    });
+
+    function toggleClaim(button) {
+      const item = button.closest(".item");
+      const id = item.getAttribute("data-id");
+      const claimed = button.getAttribute("data-claimed") === "true";
+      const icon = button.querySelector('span:first-child');
+      const text = button.querySelector('span:last-child');
+
+      if (claimed) {
+        icon.textContent = "🔓";
+        text.textContent = "Занять";
+        button.setAttribute("data-claimed", "false");
+        item.style.opacity = "1";
+        localStorage.setItem(id, "false");
+      } else {
+        icon.textContent = "✅";
+        text.textContent = "Занято ✨";
+        button.setAttribute("data-claimed", "true");
+        item.style.opacity = "0.6";
+        localStorage.setItem(id, "true");
+      }
+    }
+
+    function editLink(el) {
+      const item = el.closest(".item");
+      const link = item.querySelector(".gift-link");
+      const currentHref = link.getAttribute("href") || "";
+      const newHref = prompt("Вставьте ссылку на подарок:", currentHref);
+      if (newHref !== null) {
+        link.setAttribute("href", newHref);
+        link.textContent = newHref ? "Перейти к подарку" : "Ссылка на подарок";
+      }
+    }
+  </script>
+</body>
+</html>
